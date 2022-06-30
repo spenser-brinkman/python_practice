@@ -1,20 +1,6 @@
 import sys
 import re
 
-def count_words(input_file):
-  word_set = set(input_file.split())
-  counts = {}
-  for word in word_set:
-    counts[word] = input_file.count(word)
-
-  sorted_counts = {}
-  sorted_keys = sorted(counts, key=counts.get, reverse=True)
-
-  for w in sorted_keys:
-      sorted_counts[w] = counts[w]
-
-  return sorted_counts
-
 # Validate that only one argument is provided,
 # and that the argument is a .txt file with a name at least one character long
 if len(sys.argv) > 2 or not re.search("^.+\.(txt)$", sys.argv[1]):
@@ -22,14 +8,25 @@ if len(sys.argv) > 2 or not re.search("^.+\.(txt)$", sys.argv[1]):
   quit()
 
 input_filename = sys.argv[1]
-txt_index = input_filename.find('.txt')
-output_filename = input_filename[:txt_index] + "-count.txt"
+dottxt_index = input_filename.find('.txt')
+output_filename = input_filename[:dottxt_index] + "-count.txt"
 
 input_file = open(input_filename, 'r').read()
-input_str = input_file.split()
-
-word_counts = count_words(input_file)
-print(word_counts)
-
 output_file = open(output_filename, 'w')
 
+word_list = input_file.split()
+word_set = set(word_list)
+output_file.write(f"Total words: {len(word_list)}\n")
+output_file.write(f"Unique words: {len(word_set)}\n\n")
+word_counts = {}
+for word in word_set:
+  word_counts[word] = input_file.count(word)
+
+sorted_word_counts = {}
+sorted_keys = sorted(word_counts, key=word_counts.get, reverse=True)
+
+for w in sorted_keys:
+    sorted_word_counts[w] = word_counts[w]
+
+for word_count in sorted_word_counts.items():
+  output_file.write(f"{word_count[0]} - {word_count[1]}\n")
